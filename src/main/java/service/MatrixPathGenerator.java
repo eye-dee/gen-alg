@@ -26,10 +26,35 @@ public class MatrixPathGenerator {
 
             List<MatrixPoint> nextPossiblePoints = generatePossiblePointsForNextMove(matrix, matrixPoint);
             MatrixPoint randomElement = getRandomElement(nextPossiblePoints);
-            points.add(randomElement);
+            addAllPoints(points, randomElement);
         }
 
         return new MatrixPath(points);
+    }
+
+    private void addAllPoints(List<MatrixPoint> points, MatrixPoint matrixPoint) {
+        MatrixPoint last = points.get(points.size() - 1);
+        if (last == matrixPoint) {
+            return;
+        }
+        if (onTheDiagonal(matrixPoint, last)) {
+            int incX = sign(last.getX() - matrixPoint.getX());
+            int incY = sign(last.getY() - matrixPoint.getY());
+
+            for (int i = 1; i <= incX; ++i) {
+                points.add(new MatrixPoint(last.getX() + incX * i, last.getY() + incY * i));
+            }
+        } else {
+            throw new IllegalStateException("unreachable statement");
+        }
+    }
+
+    private boolean onTheDiagonal(MatrixPoint matrixPoint, MatrixPoint last) {
+        return Math.abs(last.getX() - matrixPoint.getX()) == Math.abs(last.getY() - matrixPoint.getY());
+    }
+
+    private int sign (int x) {
+        return Integer.compare(x, 0);
     }
 
     private MatrixPoint getRandomElement(List<MatrixPoint> nextPossiblePoints) {
