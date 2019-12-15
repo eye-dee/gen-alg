@@ -4,9 +4,11 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+import lombok.Getter;
 
 public class MatrixPath {
 
+    @Getter
     private final List<MatrixPoint> points;
 
     private final Set<MatrixPoint> pointSet;

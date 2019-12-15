@@ -93,6 +93,9 @@ public class MatrixPathGenerator {
                 matrix.get(currentPoint.getX(), currentPoint.getY() + 1) == 1) {
             availablePoints.add(new MatrixPoint(currentPoint.getX(), currentPoint.getY() + 1));
         }
+        if (availablePoints.isEmpty()) {
+            throw new IllegalArgumentException("Can't go to the new matrix point");
+        }
         return getRandomElement(availablePoints);
     }
 
