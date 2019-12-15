@@ -9,6 +9,7 @@ import model.Matrix;
 import model.MatrixPath;
 import model.MatrixPoint;
 
+import static service.ListUtils.getRandomElement;
 import static service.ListUtils.last;
 
 public class MatrixPathGenerator {
@@ -71,10 +72,6 @@ public class MatrixPathGenerator {
 
     private int sign(int x) {
         return Integer.compare(x, 0);
-    }
-
-    private MatrixPoint getRandomElement(List<MatrixPoint> nextPossiblePoints) {
-        return nextPossiblePoints.get(random.nextInt(nextPossiblePoints.size()));
     }
 
     private List<MatrixPoint> generatePossiblePointsForNextMove(Matrix matrix, MatrixPoint matrixPoint) {

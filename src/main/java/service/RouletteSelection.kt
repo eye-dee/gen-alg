@@ -6,7 +6,7 @@ class RouletteSelection {
 
     private val fitnessFunction = FitnessFunction()
 
-    fun select(matrixPaths: Collection<MatrixPath>, n: Int): List<MatrixPath> {
+    fun select(matrixPaths: Collection<MatrixPath>, n: Int): Set<MatrixPath> {
         val fitness = matrixPaths.map { fitnessFunction.evaluateFitness(it) }
         val sum = fitness.sum()
         val roulette = matrixPaths
@@ -21,6 +21,6 @@ class RouletteSelection {
             res.add(next.t)
         }
 
-        return res.toList()
+        return res
     }
 }
