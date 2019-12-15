@@ -5,6 +5,7 @@ import service.GenerationService
 import service.MatrixPathGenerator
 import service.MatrixPathSimplifier
 import service.MatrixPathValidator
+import service.RouletteSelection
 
 object Launcher {
 }
@@ -16,10 +17,11 @@ fun main() {
     val matrixPathSimplifier = MatrixPathSimplifier(BresenhamPathCreator(), MatrixPathValidator())
     val generationService = GenerationService(matrixPathGenerator, matrixPathSimplifier)
     val fitnessFunction = FitnessFunction()
+    val rouletteSelection = RouletteSelection()
 
     val generation = generationService.newGeneration(matrix, 10)
 
-    generation
+    rouletteSelection.select(generation, 3)
         .forEach {
             it.showPath()
             matrix.showMatrixWithPath(it)
