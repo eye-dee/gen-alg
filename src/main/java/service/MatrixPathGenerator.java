@@ -38,10 +38,10 @@ public class MatrixPathGenerator {
             return;
         }
         if (onTheDiagonal(matrixPoint, last)) {
-            int incX = sign(last.getX() - matrixPoint.getX());
-            int incY = sign(last.getY() - matrixPoint.getY());
+            int incX = sign(matrixPoint.getX() - last.getX());
+            int incY = sign(matrixPoint.getY() - last.getY());
 
-            for (int i = 1; i <= incX; ++i) {
+            for (int i = 1; i <= Math.abs(last.getX() - matrixPoint.getX()); ++i) {
                 points.add(new MatrixPoint(last.getX() + incX * i, last.getY() + incY * i));
             }
         } else {

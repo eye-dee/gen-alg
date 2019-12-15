@@ -26,7 +26,10 @@ public class Launcher {
     ) {
         try {
             return matrixPathGenerator.generateNewPath(matrix);
-        } catch (RuntimeException e) {
+        } catch (IndexOutOfBoundsException e) {
+            throw e;
+        }
+        catch (RuntimeException e) {
             System.out.println("Unable to generate path:" + e.getMessage());
             if (deep < 100) {
                 return generatePathExceptionally(matrix, matrixPathGenerator, deep + 1);
