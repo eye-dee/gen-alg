@@ -20,7 +20,6 @@ class CrossingGenerationService {
 
     private fun crossPaths(first: MatrixPath, second: MatrixPath): List<MatrixPath> {
         val firstAndLastPoint = listOf(first.points[0], last(first.points))
-
         val firstOrNull =
             first.points
                 .subtract(firstAndLastPoint)

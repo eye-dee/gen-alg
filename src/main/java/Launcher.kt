@@ -1,5 +1,4 @@
 import model.Matrix
-import model.MatrixPath
 import service.BresenhamPathCreator
 import service.CrossingGenerationService
 import service.FitnessFunction
@@ -7,13 +6,16 @@ import service.GenerationService
 import service.MatrixPathGenerator
 import service.MatrixPathSimplifier
 import service.MatrixPathValidator
+import service.MutationGenerationService
 import service.RouletteSelection
 
 object Launcher {
 }
 
 fun main() {
-    val matrix = Matrix(20)
+    val GENERATION_SIZE = 30;
+
+    val matrix = Matrix(40)
     matrix.showMatrix()
     val matrixPathGenerator = MatrixPathGenerator()
     val matrixPathSimplifier = MatrixPathSimplifier(BresenhamPathCreator(), MatrixPathValidator())
@@ -21,19 +23,25 @@ fun main() {
     val fitnessFunction = FitnessFunction()
     val rouletteSelection = RouletteSelection()
     val crossingGenerationService = CrossingGenerationService()
-    var generation = generationService.newGeneration(matrix, 6)
+    val mutationGenerationService = MutationGenerationService()
+    var generation = generationService.newGeneration(matrix, GENERATION_SIZE)
 
     for (i in 1..100) {
         println("#$i iteration")
-        val cross = crossingGenerationService.cross(generation)
 
-        val nextSize = cross.size - 1
-        if (nextSize == 1) {
-            generation = cross
-            break
-        }
+        val toMutateAndCross = rouletteSelection.select(generation, generation.size / 2)
 
-        generation = rouletteSelection.select(cross, nextSize)
+        val mutatedAndCross = crossingGenerationService.cross(
+            mutationGenerationService.mutate(toMutateAndCross, matrix)
+        )
+
+        generation = generation
+            .union(mutatedAndCross)
+
+        generation = rouletteSelection.select(generation, GENERATION_SIZE)
+        generation.map { fitnessFunction.evaluateFitness(it) }
+            .max()
+            ?.also { println("best fitness: $it") }
     }
 
     rouletteSelection.select(generation, 1)

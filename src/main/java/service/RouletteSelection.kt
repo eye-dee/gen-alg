@@ -7,7 +7,7 @@ class RouletteSelection {
     private val fitnessFunction = FitnessFunction()
 
     fun select(matrixPaths: Collection<MatrixPath>, n: Int): Set<MatrixPath> {
-        val fitness = matrixPaths.map { fitnessFunction.evaluateFitness(it) }
+        val fitness = matrixPaths.map { 1 / fitnessFunction.evaluateFitness(it) }
         val sum = fitness.sum()
         val roulette = matrixPaths
             .zip(fitness)
