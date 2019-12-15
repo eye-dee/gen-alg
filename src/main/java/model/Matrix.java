@@ -19,6 +19,8 @@ public class Matrix {
                 .toArray((i) -> new int[dimension][dimension]);
         arr[0][0] = 1;
         arr[dimension - 1][dimension - 1] = 1;
+        int disableRandomValueOnDiag = 1 + random.nextInt(dimension - 2);
+        arr[disableRandomValueOnDiag][disableRandomValueOnDiag] = 0;
         this.dimension = dimension;
     }
 
@@ -58,6 +60,7 @@ public class Matrix {
             }
             System.out.println();
         }
+        System.out.println();
     }
 
     public int getDimension() {

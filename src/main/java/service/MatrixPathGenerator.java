@@ -2,16 +2,29 @@ package service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Random;
+import java.util.stream.Stream;
 import model.Matrix;
 import model.MatrixPath;
 import model.MatrixPoint;
+
+import static service.ListUtils.last;
 
 public class MatrixPathGenerator {
 
     private final Random random = new Random();
 
-    public MatrixPath generateNewPath(Matrix matrix) {
+    public MatrixPath generatePath(Matrix matrix) {
+        return Stream.generate(() -> generateNewPath(matrix))
+                .limit(1000)
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .findAny()
+                .orElseThrow(() -> new IllegalArgumentException("Unable to generate path"));
+    }
+
+    private Optional<MatrixPath> generateNewPath(Matrix matrix) {
         List<MatrixPoint> points = new ArrayList<>(matrix.getDimension());
 
         points.add(new MatrixPoint(0, 0));
@@ -19,17 +32,20 @@ public class MatrixPathGenerator {
             MatrixPoint currentPoint = points.get(points.size() - 1);
 
             if (bothPointsUnavailable(matrix, currentPoint)) {
-                throw new IllegalArgumentException("Can't go to the new matrix point");
+                return Optional.empty();
             }
-            MatrixPoint matrixPoint = chooseRandomNewNextPoint(matrix, currentPoint);
-            points.add(matrixPoint);
+            var matrixPoint = chooseRandomNewNextPoint(matrix, currentPoint);
+            matrixPoint.ifPresent(points::add);
+            if (matrixPoint.isEmpty()) {
+                return Optional.empty();
+            }
 
-            List<MatrixPoint> nextPossiblePoints = generatePossiblePointsForNextMove(matrix, matrixPoint);
+            List<MatrixPoint> nextPossiblePoints = generatePossiblePointsForNextMove(matrix, last(points));
             MatrixPoint randomElement = getRandomElement(nextPossiblePoints);
             addAllPoints(points, randomElement);
         }
 
-        return new MatrixPath(points);
+        return Optional.of(new MatrixPath(points));
     }
 
     private void addAllPoints(List<MatrixPoint> points, MatrixPoint matrixPoint) {
@@ -53,7 +69,7 @@ public class MatrixPathGenerator {
         return Math.abs(last.getX() - matrixPoint.getX()) == Math.abs(last.getY() - matrixPoint.getY());
     }
 
-    private int sign (int x) {
+    private int sign(int x) {
         return Integer.compare(x, 0);
     }
 
@@ -83,7 +99,7 @@ public class MatrixPathGenerator {
         return res;
     }
 
-    private MatrixPoint chooseRandomNewNextPoint(Matrix matrix, MatrixPoint currentPoint) {
+    private Optional<MatrixPoint> chooseRandomNewNextPoint(Matrix matrix, MatrixPoint currentPoint) {
         List<MatrixPoint> availablePoints = new ArrayList<>();
         if (currentPoint.getX() + 1 < matrix.getDimension() &&
                 matrix.get(currentPoint.getX() + 1, currentPoint.getY()) == 1) {
@@ -94,9 +110,9 @@ public class MatrixPathGenerator {
             availablePoints.add(new MatrixPoint(currentPoint.getX(), currentPoint.getY() + 1));
         }
         if (availablePoints.isEmpty()) {
-            throw new IllegalArgumentException("Can't go to the new matrix point");
+            return Optional.empty();
         }
-        return getRandomElement(availablePoints);
+        return Optional.of(getRandomElement(availablePoints));
     }
 
     private boolean bothPointsUnavailable(Matrix matrix, MatrixPoint currentPoint) {
