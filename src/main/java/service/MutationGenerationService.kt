@@ -3,10 +3,12 @@ package service
 import model.Matrix
 import model.MatrixPath
 import model.MatrixPoint
-import service.ListUtils.getRandomElement
 import kotlin.random.Random
 
 class MutationGenerationService {
+
+    private val matrixPathValidator = MatrixPathValidator()
+    private val bresenhamPathCreator = BresenhamPathCreator()
 
     fun mutate(paths: Set<MatrixPath>, matrix: Matrix): Set<MatrixPath> {
         val res: MutableSet<MatrixPath> = HashSet()
@@ -21,25 +23,30 @@ class MutationGenerationService {
         if (matrixPath.points.size < 3) {
             return null
         }
-        val randomElement = getRandomElement(matrixPath.points.subList(1, matrixPath.points.size - 1))
+        val randomElementIndex = Random.nextInt(1, matrixPath.points.size - 1)
+        val randomElement = matrixPath.points[randomElementIndex]
 
         var newElement = randomNearestPoint(randomElement)
         var attempt = 0;
-        while ((matrixPath.contains(newElement) ||
-                newElement.x >= matrix.dimension ||
-                newElement.x < 0 ||
-                newElement.y >= matrix.dimension ||
-                newElement.y < 0 ||
-                matrix.get(newElement.x, newElement.y) != 1) && attempt < 10) {
+
+        while ((newElement.x >= matrix.dimension
+                || newElement.x < 0
+                || newElement.y >= matrix.dimension
+                || newElement.y < 0
+                || matrix.get(newElement.x, newElement.y) != 1
+                || !matrixPathValidator.validateMatrixPath(
+                matrix,
+                bresenhamPathCreator.createPath(matrixPath.points[randomElementIndex - 1], newElement)
+            )
+                || !matrixPathValidator.validateMatrixPath(
+                matrix,
+                bresenhamPathCreator.createPath(newElement, matrixPath.points[randomElementIndex + 1])
+            ))
+            && attempt < 10) {
             newElement = randomNearestPoint(randomElement)
             attempt++
         }
-        if (!matrixPath.contains(newElement) &&
-            newElement.x < matrix.dimension &&
-            newElement.x >= 0 &&
-            newElement.y < matrix.dimension &&
-            newElement.y > 0 &&
-            matrix.get(newElement.x, newElement.y) == 1) {
+        if (attempt < 10) {
             val indexToRemove = matrixPath.points
                 .toMutableList()
                 .indexOf(randomElement)

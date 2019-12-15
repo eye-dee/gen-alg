@@ -3,7 +3,6 @@ package service
 import model.MatrixPath
 import model.MatrixPoint
 import service.ListUtils.getRandomElement
-import service.ListUtils.last
 
 class CrossingGenerationService {
 
@@ -19,12 +18,13 @@ class CrossingGenerationService {
     }
 
     private fun crossPaths(first: MatrixPath, second: MatrixPath): List<MatrixPath> {
-        val firstAndLastPoint = listOf(first.points[0], last(first.points))
+        if (first.points.size < 4) {
+            return emptyList()
+        }
+
         val firstOrNull =
             first.points
-                .subtract(firstAndLastPoint)
-                .toList()
-                .subList(1, first.points.size - 2)
+                .subList(2, first.points.size - 2)
                 .intersect(second.points)
                 .takeIf { it.isNotEmpty() }
                 ?.let { getRandomElement(it.toList()) }

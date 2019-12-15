@@ -13,9 +13,9 @@ object Launcher {
 }
 
 fun main() {
-    val GENERATION_SIZE = 30;
+    val GENERATION_SIZE = 14
 
-    val matrix = Matrix(40)
+    val matrix = Matrix(20)
     matrix.showMatrix()
     val matrixPathGenerator = MatrixPathGenerator()
     val matrixPathSimplifier = MatrixPathSimplifier(BresenhamPathCreator(), MatrixPathValidator())
@@ -26,7 +26,7 @@ fun main() {
     val mutationGenerationService = MutationGenerationService()
     var generation = generationService.newGeneration(matrix, GENERATION_SIZE)
 
-    for (i in 1..100) {
+    for (i in 1..500) {
         println("#$i iteration")
 
         val toMutateAndCross = rouletteSelection.select(generation, generation.size / 2)
@@ -44,9 +44,8 @@ fun main() {
             ?.also { println("best fitness: $it") }
     }
 
-    rouletteSelection.select(generation, 1)
-        .first()
-        .let {
+    generation.maxBy { fitnessFunction.evaluateFitness(it) }
+        ?.let {
             it.showPath()
             matrix.showMatrixWithPath(it)
             println(fitnessFunction.evaluateFitness(it))
