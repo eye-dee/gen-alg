@@ -13,7 +13,7 @@ object Launcher {
 }
 
 fun main() {
-    val GENERATION_SIZE = 14
+    val GENERATION_SIZE = 30
 
     val matrix = Matrix(20)
     matrix.showMatrix()
@@ -26,7 +26,7 @@ fun main() {
     val mutationGenerationService = MutationGenerationService()
     var generation = generationService.newGeneration(matrix, GENERATION_SIZE)
 
-    for (i in 1..500) {
+    for (i in 1..1000) {
         println("#$i iteration")
 
         val toMutateAndCross = rouletteSelection.select(generation, generation.size / 2)
@@ -39,6 +39,9 @@ fun main() {
             .union(mutatedAndCross)
 
         generation = rouletteSelection.select(generation, GENERATION_SIZE)
+//            .map { matrixPathSimplifier.simplify(matrix, it) }
+//            .toSet()
+
         generation.map { fitnessFunction.evaluateFitness(it) }
             .max()
             ?.also { println("best fitness: $it") }

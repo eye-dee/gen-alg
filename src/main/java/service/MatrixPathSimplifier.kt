@@ -13,14 +13,25 @@ class MatrixPathSimplifier(
     fun simplify(matrix: Matrix?, matrixPath: MatrixPath): MatrixPath {
         val newPath: MutableList<MatrixPoint> = ArrayList()
         newPath.add(matrixPath.points[0])
+
+        var curIndex = 1
         while (newPath[newPath.size - 1] !== matrixPath.points[matrixPath.points.size - 1]) {
             val currentPoint = newPath[newPath.size - 1]
-            for (i in matrixPath.points.size - 1 downTo 1) {
-                val bresenhamPath = bresenhamPathCreator.createPath(currentPoint, matrixPath.points[i])
+            var nextPoint: MatrixPoint? = null
+
+            while (curIndex < matrixPath.points.size) {
+                val bresenhamPath = bresenhamPathCreator.createPath(currentPoint, matrixPath.points[curIndex])
                 if (matrixPathValidator.validateMatrixPath(matrix, bresenhamPath)) {
-                    newPath.add(matrixPath.points[i])
+                    nextPoint = matrixPath.points[curIndex]
+                    curIndex++
+                } else {
                     break
                 }
+            }
+            if (nextPoint != null) {
+                newPath.add(nextPoint)
+            } else {
+                newPath.add(matrixPath.points[curIndex - 1])
             }
         }
         return MatrixPath(newPath)
