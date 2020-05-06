@@ -15,7 +15,7 @@ object Launcher {
 fun main() {
     val GENERATION_SIZE = 30
 
-    val matrix = Matrix(20)
+    val matrix = Matrix(10)
     matrix.showMatrix()
     val matrixPathGenerator = MatrixPathGenerator()
     val matrixPathSimplifier = MatrixPathSimplifier(BresenhamPathCreator(), MatrixPathValidator())

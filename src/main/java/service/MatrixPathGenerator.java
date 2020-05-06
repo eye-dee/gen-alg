@@ -28,8 +28,11 @@ public class MatrixPathGenerator {
     private Optional<MatrixPath> generateNewPath(Matrix matrix) {
         List<MatrixPoint> points = new ArrayList<>(matrix.getDimension());
 
-        points.add(new MatrixPoint(0, 0));
-        for (int i = 0; i < 2 * matrix.getDimension() - 2; ++i) {
+//        points.add(new MatrixPoint(0, 0));
+        points.add(matrix.getStart());
+        MatrixPoint end = matrix.getEnd();
+        int goal = end.getX() + end.getY();
+        for (int i = 0; i < goal; ++i) {
             MatrixPoint currentPoint = points.get(points.size() - 1);
 
             if (bothPointsUnavailable(matrix, currentPoint)) {
@@ -46,7 +49,42 @@ public class MatrixPathGenerator {
             addAllPoints(points, randomElement);
         }
 
+        MatrixPoint last = points.get(points.size() - 1);
+        if (!onTheDiagonal(last, end)) {
+            return Optional.empty();
+        }
+
+        if (possibleToMove(last, end, matrix)) {
+            points.add(end);
+        } else {
+            return Optional.empty();
+        }
+
         return Optional.of(new MatrixPath(points));
+    }
+
+    private boolean possibleToMove(MatrixPoint from, MatrixPoint to, Matrix matrix) {
+        if (from.getX() == to.getX() && from.getY() == to.getY()) {
+            return true;
+        }
+        if (from.getX() < to.getX()) {
+            if (from.getY() < to.getY()) {
+                return false;
+            }
+            if (from.getY() - to.getY() != to.getX() - from.getX()) {
+                return false;
+            }
+
+            int diff = to.getX() - from.getX();
+            for (int i = 1; i <= diff; ++i) {
+                if (matrix.get(from.getX() + i, from.getY() - i) != 1) {
+                    return false;
+                }
+            }
+            return true;
+        } else {
+            return possibleToMove(to, from, matrix);
+        }
     }
 
     private void addAllPoints(List<MatrixPoint> points, MatrixPoint matrixPoint) {
