@@ -20,7 +20,7 @@ class MutationGenerationService {
     }
 
     private fun takeRandomAndMove(matrixPath: MatrixPath, matrix: Matrix): MatrixPath? {
-        if (matrixPath.points.size < 3) {
+        if (matrixPath.points.size < 4) {
             return null
         }
         val randomElementIndex = Random.nextInt(1, matrixPath.points.size - 2)

@@ -21,6 +21,10 @@ class ProbabilityCollection<T>(private val list: List<Item<T>>) {
         sumList = temp.toList()
     }
 
+    fun size() = sumList.size
+
+    fun all() = sumList
+
     fun nextRandom(): Item<T> =
         sumList.binarySearchBy(key = Random.nextDouble(), selector = { it.probability })
             .let {

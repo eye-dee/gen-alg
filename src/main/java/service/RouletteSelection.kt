@@ -20,6 +20,11 @@ class RouletteSelection {
 
         val probabilityService = ProbabilityCollection(roulette)
         val res: MutableSet<MatrixPath> = HashSet()
+
+        if (probabilityService.size() <= n) {
+            return probabilityService.all().map { it.t }.toSet()
+        }
+
         while (res.size < n) {
             val next = probabilityService.nextRandom()
             res.add(next.t)
