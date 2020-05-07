@@ -60,10 +60,6 @@ class MutationGenerationService {
                 .union(matrixPath.points.subList(indexToRemove + 1, matrixPath.points.size))
                 .toList()
 
-            if (points[points.size - 1].x != matrix.dimension - 1 || points[points.size - 1].y != matrix.dimension - 1) {
-                println("asdasd")
-            }
-
             return MatrixPath(
                 points
             )

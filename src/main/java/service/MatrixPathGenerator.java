@@ -3,7 +3,6 @@ package service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.Random;
 import java.util.stream.Stream;
 import model.Matrix;
 import model.MatrixPath;
@@ -14,11 +13,13 @@ import static service.ListUtils.last;
 
 public class MatrixPathGenerator {
 
-    private final Random random = new Random();
+    private MatrixPathValidator matrixPathValidator = new MatrixPathValidator();
+
+    private BresenhamPathCreator bresenhamPathCreator = new BresenhamPathCreator();
 
     public MatrixPath generatePath(Matrix matrix) {
         return Stream.generate(() -> generateNewPath(matrix))
-                .limit(1000)
+                .limit(10000)
                 .filter(Optional::isPresent)
                 .map(Optional::get)
                 .findAny()
@@ -28,11 +29,10 @@ public class MatrixPathGenerator {
     private Optional<MatrixPath> generateNewPath(Matrix matrix) {
         List<MatrixPoint> points = new ArrayList<>(matrix.getDimension());
 
-//        points.add(new MatrixPoint(0, 0));
         points.add(matrix.getStart());
         MatrixPoint end = matrix.getEnd();
         int goal = end.getX() + end.getY();
-        for (int i = 0; i < goal; ++i) {
+        for (int i = 0; i < 2 * matrix.getDimension() - 2; ++i) {
             MatrixPoint currentPoint = points.get(points.size() - 1);
 
             if (bothPointsUnavailable(matrix, currentPoint)) {
@@ -47,6 +47,12 @@ public class MatrixPathGenerator {
             List<MatrixPoint> nextPossiblePoints = generatePossiblePointsForNextMove(matrix, last(points));
             MatrixPoint randomElement = getRandomElement(nextPossiblePoints);
             addAllPoints(points, randomElement);
+
+            MatrixPath possiblePathToEnd = bresenhamPathCreator.createPath(points.get(points.size() - 1), end);
+            if (matrixPathValidator.validateMatrixPath(matrix, possiblePathToEnd)) {
+                points.add(end);
+                return Optional.of(new MatrixPath(points));
+            }
         }
 
         MatrixPoint last = points.get(points.size() - 1);
