@@ -47,7 +47,7 @@ public class Matrix {
         arr[disableRandomValueOnDiag][disableRandomValueOnDiag] = 0;
         this.dimension = dimension;
         start = new MatrixPoint(0, 0);
-        end = new MatrixPoint(3, 4);
+        end = new MatrixPoint(9, 9);
     }
 
     public int get(int x, int y) {

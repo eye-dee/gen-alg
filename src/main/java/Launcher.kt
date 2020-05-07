@@ -39,12 +39,19 @@ fun main() {
             .union(mutatedAndCross)
 
         generation = rouletteSelection.select(generation, GENERATION_SIZE)
-//            .map { matrixPathSimplifier.simplify(matrix, it) }
-//            .toSet()
 
         generation.map { fitnessFunction.evaluateFitness(it) }
             .max()
             ?.also { println("best fitness: $it") }
+
+//        generation
+//            .filter {
+//                it.points[it.points.size - 1].x != matrix.dimension - 1 ||
+//                    it.points[it.points.size - 1].y != matrix.dimension - 1
+//            }
+//            .forEach {
+//                it.showPath()
+//            }
     }
 
     generation.maxBy { fitnessFunction.evaluateFitness(it) }

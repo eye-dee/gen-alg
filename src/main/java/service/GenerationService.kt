@@ -15,7 +15,7 @@ class GenerationService(
         while (res.size < size) {
             val matrixPath = matrixPathGenerator.generatePath(matrix)
             val simplifiedPath = matrixPathSimplifier.simplify(matrix, matrixPath)
-            val isNewValue = res.add(matrixPath)
+            val isNewValue = res.add(simplifiedPath)
             if (!isNewValue) {
                 ++failureCounter
             }

@@ -23,17 +23,20 @@ class MutationGenerationService {
         if (matrixPath.points.size < 3) {
             return null
         }
-        val randomElementIndex = Random.nextInt(1, matrixPath.points.size - 1)
+        val randomElementIndex = Random.nextInt(1, matrixPath.points.size - 2)
         val randomElement = matrixPath.points[randomElementIndex]
 
         var newElement = randomNearestPoint(randomElement)
         var attempt = 0;
 
-        while ((newElement.x >= matrix.dimension
+        while (
+            (newElement.x >= matrix.dimension
                 || newElement.x < 0
                 || newElement.y >= matrix.dimension
                 || newElement.y < 0
                 || matrix.get(newElement.x, newElement.y) != 1
+                || newElement.x == matrix.end.x
+                || newElement.y == matrix.end.y
                 || !matrixPathValidator.validateMatrixPath(
                 matrix,
                 bresenhamPathCreator.createPath(matrixPath.points[randomElementIndex - 1], newElement)
@@ -42,7 +45,8 @@ class MutationGenerationService {
                 matrix,
                 bresenhamPathCreator.createPath(newElement, matrixPath.points[randomElementIndex + 1])
             ))
-            && attempt < 10) {
+            && attempt < 10
+        ) {
             newElement = randomNearestPoint(randomElement)
             attempt++
         }
@@ -51,11 +55,17 @@ class MutationGenerationService {
                 .toMutableList()
                 .indexOf(randomElement)
 
+            val points = matrixPath.points.subList(0, indexToRemove)
+                .union(listOf(newElement))
+                .union(matrixPath.points.subList(indexToRemove + 1, matrixPath.points.size))
+                .toList()
+
+            if (points[points.size - 1].x != matrix.dimension - 1 || points[points.size - 1].y != matrix.dimension - 1) {
+                println("asdasd")
+            }
+
             return MatrixPath(
-                matrixPath.points.subList(0, indexToRemove)
-                    .union(listOf(newElement))
-                    .union(matrixPath.points.subList(indexToRemove + 1, matrixPath.points.size))
-                    .toList()
+                points
             )
         }
         return null
