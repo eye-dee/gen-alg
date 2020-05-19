@@ -123,7 +123,7 @@ public class MatrixPathGenerator {
         res.add(matrixPoint);
 
         int x = matrixPoint.getX() - 1, y = matrixPoint.getY() + 1;
-        while (x >= 0 && y < matrix.getDimension() && matrix.get(x, y) == 1) {
+        while (x >= 0 && y < matrix.getDimension() && matrix.get(x, y) != 0) {
             res.add(new MatrixPoint(x, y));
             x -= 1;
             y += 1;
@@ -131,7 +131,7 @@ public class MatrixPathGenerator {
 
         x = matrixPoint.getX() + 1;
         y = matrixPoint.getY() - 1;
-        while (x < matrix.getDimension() && y >= 0 && matrix.get(x, y) == 1) {
+        while (x < matrix.getDimension() && y >= 0 && matrix.get(x, y) != 0) {
             res.add(new MatrixPoint(x, y));
             x += 1;
             y -= 1;
@@ -143,11 +143,11 @@ public class MatrixPathGenerator {
     private Optional<MatrixPoint> chooseRandomNewNextPoint(Matrix matrix, MatrixPoint currentPoint) {
         List<MatrixPoint> availablePoints = new ArrayList<>();
         if (currentPoint.getX() + 1 < matrix.getDimension() &&
-                matrix.get(currentPoint.getX() + 1, currentPoint.getY()) == 1) {
+                matrix.get(currentPoint.getX() + 1, currentPoint.getY()) != 0) {
             availablePoints.add(new MatrixPoint(currentPoint.getX() + 1, currentPoint.getY()));
         }
         if (currentPoint.getY() + 1 < matrix.getDimension() &&
-                matrix.get(currentPoint.getX(), currentPoint.getY() + 1) == 1) {
+                matrix.get(currentPoint.getX(), currentPoint.getY() + 1) != 0) {
             availablePoints.add(new MatrixPoint(currentPoint.getX(), currentPoint.getY() + 1));
         }
         if (availablePoints.isEmpty()) {

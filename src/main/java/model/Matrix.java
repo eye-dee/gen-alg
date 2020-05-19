@@ -1,6 +1,7 @@
 package model;
 
 import java.util.Random;
+import org.jetbrains.annotations.NotNull;
 
 public class Matrix {
 
@@ -11,6 +12,8 @@ public class Matrix {
     private final MatrixPoint start;
 
     private final MatrixPoint end;
+
+    private final int valueAtTheEnd;
 
     private final int dimension;
 
@@ -31,16 +34,29 @@ public class Matrix {
                         {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
                         {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1},
                         {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1},
-                        {0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1},
+                        {0, 0, 0, 0, 0, 2, 2, 2, 2, 2, 2, 2, 2, 3, 3, 3, 0, 1, 1, 1},
                         {1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1},
                         {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1},
                         {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1},
-                        {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1}};
+                        {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 9, 4, 3}};
 
         arr[0][0] = 1;
         this.dimension = arr.length;
+        this.valueAtTheEnd = 9;
         start = new MatrixPoint(0, 0);
-        end = new MatrixPoint(0, 12);
+        end = findEnd(9);
+    }
+
+    @NotNull
+    private MatrixPoint findEnd(int value) {
+        for (int i = 0; i < arr.length; i++) {
+            for (int j = 0; j < arr[i].length; j++) {
+                if (arr[i][j] == value) {
+                    return new MatrixPoint(i, j);
+                }
+            }
+        }
+        throw new RuntimeException("Impossible to find end");
     }
 
     public int get(int x, int y) {
